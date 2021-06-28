@@ -1,0 +1,33 @@
+{
+  "name": "vue-ga-cli",
+  "version": "1.0.4",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "ga": "bin/xr",
+    "ga-add": "bin/xr-add",
+    "ga-delete": "bin/xr-delete",
+    "ga-list": "bin/xr-list",
+    "ga-init": "bin/xr-init"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "2.4.0",
+    "chalk": "2.1.0",
+    "commander": "2.19.0",
+    "consolidate": "0.14.0",
+    "git-clone": "^0.1.0",
+    "handlebars": "4.0.5",
+    "inquirer": "6.5.2",
+    "metalsmith": "2.1.0",
+    "multimatch": "3.0.0",
+    "npm-install-package": "^2.1.0",
+    "ora": "^3.2.0",
+    "semver": "5.1.0",
+    "validate-npm-package-name": "3.0.0"
+  }
+}

@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+// 自定义命令行
+const program = require('commander')
+const downloadGit = require('../lib/download')
+const process = require('process')
+// 工具
+const validate = require('../utils/validate')
+const { getProjectPath } = require('../utils/path')
+
+program.usage('<template-name> [project-name]')
+program.parse(process.argv)
+// ！！！！！   关于命令提示部分 待优化 util/help文件
+// 当没有输入参数的时候给个提示
+if (program.args.length < 1) return program.help()
+
+// 模板名字
+let templateName = program.args[0]
+// 项目名字
+let projectName = program.args[1]
+// 校验模板名字是否存在
+validate.template.isEmpty(templateName)
+// 校验项目名字是否为空
+validate.project.isEmpty(projectName)
+// 校验项目名字是否有效
+validate.project.isLegal(projectName)
+// 获取项目地址(本地)
+const projectPath = getProjectPath(projectName)
+// 获取模板信息
+const templateInfo = require(`${__dirname}/../template`)
+// 模板地址 (github地址)
+const templateUrl = templateInfo[templateName]
+
+// 下载部分
+downloadGit(templateUrl, projectName, {}, projectPath, () => {})
