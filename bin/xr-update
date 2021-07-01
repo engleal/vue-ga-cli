@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+// 依赖项
+const fs = require('fs')
+const { getCurrenPath, concatPath } = require('../utils/path')
+const downloadGit = require('../lib/download')
+const generate = require('../lib/generate')
+const mergeFile = require('../lib/merge')
+// 启动ga-update时候的项目路径
+const localProjectPath = getCurrenPath()
+// 项目下的package.json的路径
+const packageJsonPath = concatPath(localProjectPath, 'package.json')
+// package的内容
+const projectPackageJsonStr = fs.readFileSync(packageJsonPath).toString()
+// package json化
+const packageJson = JSON.parse(projectPackageJsonStr)
+// 模板项目相关的信息
+const projectAndtemplateInfo = packageJson.templateInfo
+// console.log('packageJson', packageJson)
+// 模板名字
+const templateName = projectAndtemplateInfo.templateName
+// 获取模板信息
+const templateInfo = require(`${__dirname}/../template`)
+// 模板地址 (github地址)
+const templateUrl = templateInfo[templateName]
+// console.log('templateUrl', templateUrl)
+// 项目名字
+const oldDirName = projectAndtemplateInfo.dest
+const projectName = oldDirName + '-temp'
+// console.log('projectName', projectName)
+// 获取项目地址(本地)
+const projectPath = concatPath(localProjectPath, projectName)
+// console.log('projectPath', projectPath)
+// 回答的答案
+let answer = projectAndtemplateInfo.answer
+// console.log('answer', answer)
+answer.autoInstall = false
+downloadGit(templateUrl, projectName, {}, () => {
+  generate(
+    { projectName: oldDirName, projectPath, templateName },
+    { answer },
+    (err) => {
+      mergeFile(projectName)
+      // console.log("generate-update-err", err)
+      // if (err) return new Error(err)
+    }
+  )
+})

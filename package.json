@@ -8,7 +8,8 @@
     "ga-add": "bin/xr-add",
     "ga-delete": "bin/xr-delete",
     "ga-list": "bin/xr-list",
-    "ga-init": "bin/xr-init"
+    "ga-init": "bin/xr-init",
+    "ga-update": "bin/xr-update"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,11 +21,14 @@
     "chalk": "2.1.0",
     "commander": "2.19.0",
     "consolidate": "0.14.0",
+    "diff": "^5.0.0",
     "git-clone": "^0.1.0",
     "handlebars": "4.0.5",
     "inquirer": "6.5.2",
+    "json-format": "^1.0.1",
     "metalsmith": "2.1.0",
     "multimatch": "3.0.0",
+    "node-diff3": "^3.0.0",
     "npm-install-package": "^2.1.0",
     "ora": "^3.2.0",
     "semver": "5.1.0",

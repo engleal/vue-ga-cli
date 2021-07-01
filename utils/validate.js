@@ -2,6 +2,7 @@
 const validateProjectName = require('validate-npm-package-name')
 const { exit } = require('./exit')
 module.exports = {
+  // 模板相关
   template: {
     isEmpty: function (templateName) {
       if (!templateName) {
@@ -10,6 +11,7 @@ module.exports = {
       }
     },
   },
+  // 项目相关
   project: {
     isEmpty: function (projectName) {
       if (!projectName) {
@@ -26,4 +28,12 @@ module.exports = {
       }
     },
   },
+  // 数据类型
+  dataType: {
+    obj: {
+      emptyObj: function (obj = {}) {
+        return Object.keys(obj).length ? false : true
+      }
+    }
+  }
 }
