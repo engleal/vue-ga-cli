@@ -4,9 +4,10 @@ const program = require('commander')
 const downloadGit = require('../lib/download')
 const generate = require('../lib/generate')
 const process = require('process')
+const { rimrifDirectory } = require('../utils/fs')
 // 工具
 const validate = require('../utils/validate')
-const { getProjectPath } = require('../utils/path')
+const { getProjectPath, getCurrenPath, concatPath } = require('../utils/path')
 program.usage('<template-name> [project-name]')
 program.parse(process.argv)
 // ！！！！！   关于命令提示部分 待优化 util/help文件
@@ -31,5 +32,22 @@ const templateInfo = require(`${__dirname}/../template`)
 const templateUrl = templateInfo[templateName]
 // 下载部分
 downloadGit(templateUrl, projectName, {}, () => {
-  generate({ projectName, projectPath,templateName }, { answer: {} }, (err) => {})
+  let oldUrl = getCurrenPath()
+  // 切换到模板项目进程
+  process.chdir(projectName)
+  let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
+  gitTag.latest(function (tag) {
+    console.log(tag)
+    let tags = tag ? tag : 'v1.0'
+    process.chdir(oldUrl)
+    let gitUrl = concatPath(getCurrenPath(), projectName, '.git')
+    // 删除.git文件夹
+    rimrifDirectory(gitUrl)
+    generate(
+      { projectName, projectPath, templateName, tags },
+      { answer: {} },
+      (err) => {
+      }
+    )
+  })
 })

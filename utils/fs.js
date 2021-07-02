@@ -2,6 +2,8 @@ const fs = require('fs')
 const { getCurrenPath, concatPath } = require('./path')
 const { getFileName, getDirectPath, getStep } = require('./path')
 const { changeDir, resetDir } = require('./process')
+const fs2 = require('fs-extra')
+// console.log("fs2", fs2)
 // 是否文件
 exports.isFile = isFile
 function isFile(
@@ -105,4 +107,14 @@ function changeMod(path, mode) {
 exports.existsFileOrDir = existsFileOrDir
 function existsFileOrDir(path) {
   return fs.existsSync(path)
+}
+
+// 复制文件夹和文件
+exports.copyFileAndDirectory = copyFileAndDirectory
+function copyFileAndDirectory(sourceDirName, targetDir,cb) {
+  fs2.copy(sourceDirName, targetDir)
+    .then(() => {
+      cb && cb('复制成功')
+    })
+    .catch(err => new Error(err))
 }

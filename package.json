@@ -1,6 +1,6 @@
 {
   "name": "vue-ga-cli",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -9,7 +9,8 @@
     "ga-delete": "bin/xr-delete",
     "ga-list": "bin/xr-list",
     "ga-init": "bin/xr-init",
-    "ga-update": "bin/xr-update"
+    "ga-update": "bin/xr-update",
+    "ga-update2": "bin/xr-update2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,7 +23,11 @@
     "commander": "2.19.0",
     "consolidate": "0.14.0",
     "diff": "^5.0.0",
+    "fs-extra": "^10.0.0",
     "git-clone": "^0.1.0",
+    "git-commit-info": "^2.0.0",
+    "git-log": "^1.0.0-beta.1",
+    "git-tag": "^0.2.0",
     "handlebars": "4.0.5",
     "inquirer": "6.5.2",
     "json-format": "^1.0.1",
