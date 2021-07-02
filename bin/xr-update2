@@ -5,6 +5,7 @@ const { getCurrenPath, concatPath } = require('../utils/path')
 const downloadGit = require('../lib/download')
 const generate = require('../lib/generate')
 const mergeFile = require('../lib/merge2')
+const process = require('process')
 // 启动ga-update时候的项目路径
 const localProjectPath = getCurrenPath()
 // 项目下的package.json的路径
@@ -33,11 +34,19 @@ answer.autoInstall = false
 // tag(使用tag进行下载)
 let tags = projectAndtemplateInfo.tags
 downloadGit(templateUrl, projectName, {}, () => {
-  generate(
-    { projectName: oldDirName, projectPath, templateName },
-    { answer },
-    (err) => {
-      mergeFile(projectName,oldDirName,ancestorsProjectName,tags)
-    }
-  )
+  let oldUrl = getCurrenPath()
+  // 切换到模板项目进程
+  process.chdir(projectName)
+  let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
+  gitTag.latest(function (tag) {
+    console.log('gitTag', tag)
+    process.chdir(oldUrl)
+    generate(
+      { projectName: oldDirName, projectPath, templateName, tags: tag },
+      { answer },
+      (err) => {
+        mergeFile(projectName, oldDirName, ancestorsProjectName, tags)
+      }
+    )
+  })
 })

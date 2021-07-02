@@ -37,8 +37,8 @@ downloadGit(templateUrl, projectName, {}, () => {
   process.chdir(projectName)
   let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
   gitTag.latest(function (tag) {
-    console.log(tag)
-    let tags = tag ? tag : 'v1.0'
+    console.log('gitTag', tag)
+    let tags = tag ? tag : 'v1.3'
     process.chdir(oldUrl)
     let gitUrl = concatPath(getCurrenPath(), projectName, '.git')
     // 删除.git文件夹
@@ -46,8 +46,7 @@ downloadGit(templateUrl, projectName, {}, () => {
     generate(
       { projectName, projectPath, templateName, tags },
       { answer: {} },
-      (err) => {
-      }
+      (err) => {}
     )
   })
 })
