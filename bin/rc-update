@@ -39,14 +39,12 @@ downloadGit(templateUrl, projectName, {}, () => {
   process.chdir(projectName)
   let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
   gitTag.latest(function (tag) {
-    console.log('gitTag', tag)
+    console.log('获取最新tag', tag)
     process.chdir(oldUrl)
     generate(
       { projectName: oldDirName, projectPath, templateName, tags: tag },
       { answer },
       (err) => {
-        console.log("oldTag", `${tags}\r\n`)
-        console.log("lastTag", `${tag}\r\n`)
         mergeFile(projectName, oldDirName, ancestorsProjectName, tags, tag)
       }
     )
