@@ -46,7 +46,6 @@ function createDirectory(directoryPath) {
 // 生成文件
 exports.crateFile = crateFile
 function crateFile(filePath, content) {
-  console.log('filePath', filePath)
   const fileName = getFileName(filePath)
   // 目标目录
   const directoryPath = getDirectPath(filePath)
@@ -56,12 +55,10 @@ function crateFile(filePath, content) {
   }
   // 切换node的执行进程到directoryPath
   changeDir(directoryPath)
-  console.log('此时进程目录是', getCurrenPath())
   // 生成文件
   fs.writeFileSync(fileName, content)
   // 将node的执行进程恢复到原来的path
   resetDir(directoryPath)
-  console.log('此时进程目录是', getCurrenPath())
 }
 
 // 读取文件内容

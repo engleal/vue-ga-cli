@@ -45,7 +45,9 @@ downloadGit(templateUrl, projectName, {}, () => {
       { projectName: oldDirName, projectPath, templateName, tags: tag },
       { answer },
       (err) => {
-        mergeFile(projectName, oldDirName, ancestorsProjectName, tag)
+        console.log("oldTag", `${tags}\r\n`)
+        console.log("lastTag", `${tag}\r\n`)
+        mergeFile(projectName, oldDirName, ancestorsProjectName, tags, tag)
       }
     )
   })
