@@ -4,7 +4,8 @@ const fs = require('fs')
 const { getCurrenPath, concatPath } = require('../utils/path')
 const downloadGit = require('../lib/download')
 const generate = require('../lib/generate')
-const mergeFile = require('../lib/merge2')
+const mergeFile = require('../lib/merge')
+const process = require('process')
 // 启动ga-update时候的项目路径
 const localProjectPath = getCurrenPath()
 // 项目下的package.json的路径
@@ -15,31 +16,37 @@ const projectPackageJsonStr = fs.readFileSync(packageJsonPath).toString()
 const packageJson = JSON.parse(projectPackageJsonStr)
 // 模板项目相关的信息
 const projectAndtemplateInfo = packageJson.templateInfo
-// console.log('packageJson', packageJson)
 // 模板名字
 const templateName = projectAndtemplateInfo.templateName
 // 获取模板信息
 const templateInfo = require(`${__dirname}/../template`)
 // 模板地址 (github地址)
 const templateUrl = templateInfo[templateName]
-// console.log('templateUrl', templateUrl)
 // 项目名字
 const oldDirName = projectAndtemplateInfo.dest
-const projectName = oldDirName + '-temp'
-// console.log('projectName', projectName)
+const projectName = oldDirName + '-merge'
+const ancestorsProjectName = oldDirName + '-ancestors'
 // 获取项目地址(本地)
 const projectPath = concatPath(localProjectPath, projectName)
-// console.log('projectPath', projectPath)
 // 回答的答案
 let answer = projectAndtemplateInfo.answer
-// console.log('answer', answer)
 answer.autoInstall = false
+// tag(使用tag进行下载)
+let tags = projectAndtemplateInfo.tags
 downloadGit(templateUrl, projectName, {}, () => {
-  generate(
-    { projectName: oldDirName, projectPath, templateName },
-    { answer },
-    (err) => {
-      mergeFile(projectName)
-    }
-  )
+  let oldUrl = getCurrenPath()
+  // 切换到模板项目进程
+  process.chdir(projectName)
+  let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
+  gitTag.latest(function (tag) {
+    console.log('gitTag', tag)
+    process.chdir(oldUrl)
+    generate(
+      { projectName: oldDirName, projectPath, templateName, tags: tag },
+      { answer },
+      (err) => {
+        mergeFile(projectName, oldDirName, ancestorsProjectName, tag)
+      }
+    )
+  })
 })

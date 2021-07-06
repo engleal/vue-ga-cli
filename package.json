@@ -1,16 +1,15 @@
 {
-  "name": "vue-ga-cli",
-  "version": "1.0.9",
+  "name": "vue-rc-cli",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "ga": "bin/xr",
-    "ga-add": "bin/xr-add",
-    "ga-delete": "bin/xr-delete",
-    "ga-list": "bin/xr-list",
-    "ga-init": "bin/xr-init",
-    "ga-update": "bin/xr-update",
-    "ga-update2": "bin/xr-update2"
+    "rc": "bin/rc",
+    "rc-add": "bin/rc-add",
+    "rc-delete": "bin/rc-delete",
+    "rc-list": "bin/rc-list",
+    "rc-init": "bin/rc-init",
+    "rc-update2": "bin/rc-update"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

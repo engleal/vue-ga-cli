@@ -70,6 +70,12 @@ function readFileContent(filePath) {
   return fs.readFileSync(filePath).toString()
 }
 
+// 读取媒体资源
+exports.readMediaSource = readMediaSource
+function readMediaSource(filePath) {
+  return fs.readFileSync(filePath)
+}
+
 // 往文件中写入内容
 exports.writeFileContent = writeFileContent
 function writeFileContent(filePath, content) {
