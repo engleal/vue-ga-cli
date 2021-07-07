@@ -37,7 +37,7 @@ downloadGit(templateUrl, projectName, {}, () => {
   process.chdir(projectName)
   let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
   gitTag.latest(function (tag) {
-    console.log('gitTag', tag)
+    // console.log('gitTag', tag)
     let tags = tag ? tag : 'v1.3'
     process.chdir(oldUrl)
     let gitUrl = concatPath(getCurrenPath(), projectName, '.git')

@@ -43,7 +43,7 @@ downloadGit(templateUrl, projectName, {}, () => {
   process.chdir(projectName)
   let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
   gitTag.latest(function (tag) {
-    console.log('获取最新tag', tag)
+    // console.log('获取最新tag', tag)
     if (tag === tags) {
       process.chdir(oldUrl)
       console.log(chalk.green("已经是最新版本无需刷新"))
