@@ -5,7 +5,11 @@ const { getCurrenPath, concatPath } = require('../utils/path')
 const downloadGit = require('../lib/download')
 const generate = require('../lib/generate')
 const mergeFile = require('../lib/merge')
+const {
+  rimrifDirectory
+} = require('../utils/fs')
 const process = require('process')
+const chalk = require('chalk')
 // 启动ga-update时候的项目路径
 const localProjectPath = getCurrenPath()
 // 项目下的package.json的路径
@@ -40,13 +44,19 @@ downloadGit(templateUrl, projectName, {}, () => {
   let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
   gitTag.latest(function (tag) {
     console.log('获取最新tag', tag)
-    process.chdir(oldUrl)
-    generate(
-      { projectName: oldDirName, projectPath, templateName, tags: tag },
-      { answer },
-      (err) => {
-        mergeFile(projectName, oldDirName, ancestorsProjectName, tags, tag)
-      }
-    )
+    if (tag === tags) {
+      process.chdir(oldUrl)
+      console.log(chalk.green("已经是最新版本无需刷新"))
+      rimrifDirectory(projectPath)
+    } else {
+      process.chdir(oldUrl)
+      generate(
+        { projectName: oldDirName, projectPath, templateName, tags: tag },
+        { answer },
+        (err) => {
+          mergeFile(projectName, oldDirName, ancestorsProjectName, tags, tag)
+        }
+      )
+    }
   })
 })
