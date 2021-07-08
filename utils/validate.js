@@ -31,7 +31,7 @@ module.exports = {
   dataType: {
     obj: {
       emptyObj: function (obj = {}) {
-        return Object.keys(obj).length ? false : true
+        return Object.keys(obj).length !==0 ? false : true
       }
     }
   }

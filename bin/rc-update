@@ -5,9 +5,7 @@ const { getCurrenPath, concatPath } = require('../utils/path')
 const downloadGit = require('../lib/download')
 const generate = require('../lib/generate')
 const mergeFile = require('../lib/merge')
-const {
-  rimrifDirectory
-} = require('../utils/fs')
+const { rimrifDirectory } = require('../utils/fs')
 const process = require('process')
 const chalk = require('chalk')
 // 启动ga-update时候的项目路径
@@ -21,7 +19,7 @@ const packageJson = JSON.parse(projectPackageJsonStr)
 // 模板项目相关的信息
 const projectAndtemplateInfo = packageJson.templateInfo
 // 模板名字
-const templateName = projectAndtemplateInfo.templateName || "codeUp"
+const templateName = projectAndtemplateInfo.templateName || 'codeUp'
 // 获取模板信息
 const templateInfo = require(`${__dirname}/../template`)
 // 模板地址 (github地址)
@@ -45,7 +43,7 @@ downloadGit(templateUrl, projectName, {}, () => {
     // console.log('获取最新tag', tag)
     if (tag === tags) {
       process.chdir(oldUrl)
-      console.log(chalk.green("已经是最新版本无需刷新"))
+      console.log(chalk.green('已经是最新版本无需刷新'))
       rimrifDirectory(projectPath)
     } else {
       process.chdir(oldUrl)

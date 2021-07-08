@@ -22,15 +22,12 @@ if (program.args.length > 1) {
 // 参数只有一个那就是模板名字
 else if (program.args.length === 1) {
   templateName = 'codeUp'
-  projectName = program.args[1]
+  projectName = program.args[0]
 } else if (program.args.length < 1) {
   return program.help()
 }
-
-// 模板名字
-let templateName = 'codeUp'
-// 项目名字
-let projectName = program.args[0]
+console.log("templateName", templateName)
+console.log("projectName", projectName)
 // 校验模板名字是否存在
 validate.template.isEmpty(templateName)
 // 校验项目名字是否为空
