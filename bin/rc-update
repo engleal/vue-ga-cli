@@ -21,7 +21,7 @@ const packageJson = JSON.parse(projectPackageJsonStr)
 // 模板项目相关的信息
 const projectAndtemplateInfo = packageJson.templateInfo
 // 模板名字
-const templateName = projectAndtemplateInfo.templateName
+const templateName = projectAndtemplateInfo.templateName || "codeUp"
 // 获取模板信息
 const templateInfo = require(`${__dirname}/../template`)
 // 模板地址 (github地址)
@@ -34,7 +34,6 @@ const ancestorsProjectName = oldDirName + '-ancestors'
 const projectPath = concatPath(localProjectPath, projectName)
 // 回答的答案
 let answer = projectAndtemplateInfo.answer
-answer.autoInstall = false
 // tag(使用tag进行下载)
 let tags = projectAndtemplateInfo.tags
 downloadGit(templateUrl, projectName, {}, () => {
