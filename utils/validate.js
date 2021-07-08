@@ -1,5 +1,4 @@
 // 检查项目名字
-const validateProjectName = require('validate-npm-package-name')
 const { exit } = require('./exit')
 module.exports = {
   // 模板相关
@@ -20,10 +19,10 @@ module.exports = {
       }
     },
     isLegal: function (projectName) {
+      let reg = /^[a-z0-9\.-]*$/g
       // 工程名是否合法
-      const result = validateProjectName(projectName)
-      if (!result.validForNewPackages) {
-        exit(1, '无效的项目名字')
+      if (!reg.test(projectName)) {
+        exit(1, '项目名无效，只能由数字、字母和中划线组成')
         return
       }
     },
