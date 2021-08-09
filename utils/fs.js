@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { getCurrenPath, concatPath } = require('./path')
+const { concatPath } = require('./path')
 const { getFileName, getDirectPath, getStep } = require('./path')
 const { changeDir, resetDir } = require('./process')
 const fs2 = require('fs-extra')
@@ -76,7 +76,18 @@ function readMediaSource(filePath) {
 // 往文件中写入内容
 exports.writeFileContent = writeFileContent
 function writeFileContent(filePath, content) {
-  return fs.writeFileSync(filePath, content)
+  try {
+    fs.chmodSync(filePath,0o777)
+  } catch (error) {
+    console.log("改变权限error",error)
+  }
+  try {
+    fs.writeFileSync(filePath, content)
+  } catch (error) {
+    console.log("修改内容error",erro)
+  }
+
+  return;
 }
 
 // 删除目录
