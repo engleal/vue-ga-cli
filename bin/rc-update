@@ -69,7 +69,6 @@ runCommand("git", ["config core.fillmode false"]).then(() => {
 // 获取模板信息
 function getTemplateInfo() {
   const directoryName = getLastDirectoryName(getCurrenPath())
-  console.log('directoryName', directoryName)
   // 从packgejson中获取信息
   const packageJsonInfo = JSON.parse(getFileContent('package.json'))
   const packageTemplateInfo = packageJsonInfo.templateInfo || {}
