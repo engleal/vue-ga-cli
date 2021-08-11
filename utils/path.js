@@ -31,3 +31,11 @@ exports.getDirectPath = function (filePath) {
 exports.getStep = function () {
   return path.sep
 }
+
+// 获取目录路径最后的目录名字
+exports.getLastDirectoryName = function (directoryPath) {
+  const index = directoryPath.split(path.sep).join('/').lastIndexOf('/')
+  return directoryPath.substring(index + 1, directoryPath.length)
+}
+
+

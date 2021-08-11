@@ -12,3 +12,5 @@ exports.resetDir = function (directory) {
   let oldPath =nodeProcessPath[directory] ||  getCurrenPath()
   process.chdir(oldPath)
 }
+
+

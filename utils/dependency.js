@@ -1,9 +1,5 @@
-const path = require('path')
-const fs = require('fs')
 const chalk = require('chalk')
 const spawn = require('child_process').spawn
-
-
 
 /**
  * Runs `npm install` in the project directory
@@ -12,7 +8,7 @@ const spawn = require('child_process').spawn
  */
 exports.installDependencies = function installDependencies(
   targerPath,
-  installMethod = 'npm',
+  installMethod = 'npm'
 ) {
   console.log(`\n\n# ${chalk.green('开始安装项目依赖 ...')}`)
   console.log('# ========================\n')
@@ -21,18 +17,13 @@ exports.installDependencies = function installDependencies(
   })
 }
 
-
 // 打印信息
 exports.printMessage = function printMessage(projectName) {
   const message = `
 To get started:
 
-  ${chalk.yellow(
-    `cd ${projectName}\n`
-  )}
-  ${chalk.yellow(
-    `npm run dev\n`
-  )}
+  ${chalk.yellow(`cd ${projectName}\n`)}
+  ${chalk.yellow(`npm run dev\n`)}
 `
   console.log(message)
 }
@@ -64,7 +55,7 @@ function sortObject(object) {
   const sortedObject = {}
   Object.keys(object)
     .sort()
-    .forEach(item => {
+    .forEach((item) => {
       sortedObject[item] = object[item]
     })
   return sortedObject

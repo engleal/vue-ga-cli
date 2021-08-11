@@ -1,25 +1,27 @@
 #!/usr/bin/env node
 // 依赖项
 const fs = require('fs')
-const { getCurrenPath, concatPath } = require('../utils/path')
+const {
+  getCurrenPath,
+  concatPath,
+  getLastDirectoryName,
+} = require('../utils/path')
+const validate = require('../utils/dataValidate')
+const { isMac } = require('../utils/system')
+const { runCommand } = require('../utils/spwan')
 const downloadGit = require('../lib/download')
 const generate = require('../lib/generate')
 const mergeFile = require('../lib/merge')
 const { rimrifDirectory } = require('../utils/fs')
 const process = require('process')
 const chalk = require('chalk')
-// 启动ga-update时候的项目路径
+// 启动rc-update时候的项目路径
 const localProjectPath = getCurrenPath()
-// 项目下的package.json的路径
-const packageJsonPath = concatPath(localProjectPath, 'package.json')
-// package的内容
-const projectPackageJsonStr = fs.readFileSync(packageJsonPath).toString()
-// package json化
-const packageJson = JSON.parse(projectPackageJsonStr)
 // 模板项目相关的信息
-const projectAndtemplateInfo = packageJson.templateInfo
+const projectAndtemplateInfo = getTemplateInfo()
+// console.log('projectAndtemplateInfo', projectAndtemplateInfo)
 // 模板名字
-const templateName = projectAndtemplateInfo.templateName || 'codeUp'
+const templateName = projectAndtemplateInfo.templateName
 // 获取模板信息
 const templateInfo = require(`${__dirname}/../template`)
 // 模板地址 (github地址)
@@ -34,26 +36,135 @@ const projectPath = concatPath(localProjectPath, projectName)
 let answer = projectAndtemplateInfo.answer
 // tag(使用tag进行下载)
 let tags = projectAndtemplateInfo.tags
-downloadGit(templateUrl, projectName, {}, () => {
-  let oldUrl = getCurrenPath()
-  // 切换到模板项目进程
-  process.chdir(projectName)
-  let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
-  gitTag.latest(function (tag) {
-    // console.log('获取最新tag', tag)
-    if (tag === tags) {
-      process.chdir(oldUrl)
-      console.log(chalk.green('已经是最新版本无需刷新'))
-      rimrifDirectory(projectPath)
-    } else {
-      process.chdir(oldUrl)
-      generate(
-        { projectName: oldDirName, projectPath, templateName, tags: tag },
-        { answer },
-        (err) => {
-          mergeFile(projectName, oldDirName, ancestorsProjectName, tags, tag)
-        }
-      )
-    }
+runCommand("git", ["config core.fillmode false"]).then(() => {
+  console.log(`取消文件权限变更跟踪成功\r\n`)
+  downloadGit(templateUrl, projectName, {}, () => {
+    let oldUrl = getCurrenPath()
+    // 切换到模板项目进程
+    process.chdir(projectName)
+    let gitTag = require('git-tag')({ localOnly: true, dir: '/.git' })
+    gitTag.latest(function (tag) {
+      // console.log('获取最新tag', tag)
+      if (tag === tags) {
+        process.chdir(oldUrl)
+        console.log(chalk.green('已经是最新版本无需刷新'))
+        rimrifDirectory(projectPath)
+      } else {
+        process.chdir(oldUrl)
+        generate(
+          { projectName: oldDirName, projectPath, templateName, tags: tag },
+          { answer },
+          (err) => {
+            mergeFile(projectName, oldDirName, ancestorsProjectName, tags, tag)
+          }
+        )
+      }
+    })
   })
+}).catch((err) => {
+  console.log(`取消文件权限变更跟踪失败：`, err)
 })
+
+
+// 获取模板信息
+function getTemplateInfo() {
+  const directoryName = getLastDirectoryName(getCurrenPath())
+  console.log('directoryName', directoryName)
+  // 从packgejson中获取信息
+  const packageJsonInfo = JSON.parse(getFileContent('package.json'))
+  const packageTemplateInfo = packageJsonInfo.templateInfo || {}
+  // 从const/website中获取信息
+  const websiteStr = getFileContent('src/const/website.js', false)
+  // 从packgejson中获取信息
+  const dockerfileStr = getFileContent('Dockerfile', false)
+  const templateInfo = {
+    answer: {},
+  }
+  if (packageTemplateInfo.dest) {
+    templateInfo.dest = packageTemplateInfo.dest || directoryName
+  } else {
+    templateInfo.dest = directoryName
+  }
+  if (packageTemplateInfo.templateName) {
+    templateInfo.templateName = packageTemplateInfo.templateName || 'codeUp'
+  } else {
+    templateInfo.templateName = 'codeUp'
+  }
+  if (packageTemplateInfo.tags) {
+    templateInfo.tags = packageTemplateInfo.tags || 'v1.0'
+  } else {
+    templateInfo.tags = 'v1.0'
+  }
+  let newLineSymbol = isMac() ? '\n' : '\r\n'
+  const index = dockerfileStr.lastIndexOf('app/')
+  const nginxTemplateName = dockerfileStr
+    .slice(index + 4)
+    .replace(newLineSymbol, '')
+  const index2 = websiteStr.lastIndexOf('menuId')
+  const index3 = websiteStr.lastIndexOf('}')
+  const menuId = Number(
+    websiteStr.slice(index2 + 8, index3).replace(newLineSymbol, '')
+  )
+  if (!packageTemplateInfo.answer) {
+    templateInfo.answer = {
+      name: directoryName,
+      description: packageJsonInfo.description || 'A Vue.js project',
+      author: packageJsonInfo.author || '',
+      menuId: menuId || 1,
+      templateName: nginxTemplateName || 'template',
+    }
+  } else {
+    if (validate.getDataType(packageTemplateInfo.answer) === 'object') {
+      if (validate.object.getLength(packageTemplateInfo.answer) !== 0) {
+        // 传入对象有属性的从对象中取值 否则就是默认值
+        if (packageTemplateInfo.answer.name) {
+          templateInfo.answer.name = packageTemplateInfo.answer.name
+        } else {
+          templateInfo.answer.name = directoryName
+        }
+        if (packageTemplateInfo.answer.description) {
+          templateInfo.answer.description =
+            packageTemplateInfo.answer.description
+        } else {
+          templateInfo.answer.description =
+            packageJsonInfo.description || 'A Vue.js project'
+        }
+        if (packageTemplateInfo.answer.author) {
+          templateInfo.answer.author = packageTemplateInfo.answer.author
+        } else {
+          templateInfo.answer.author = packageJsonInfo.author || ''
+        }
+        if (packageTemplateInfo.answer.menuId) {
+          templateInfo.answer.menuId = packageTemplateInfo.answer.menuId
+        } else {
+          templateInfo.answer.menuId = menuId || 1
+        }
+        if (packageTemplateInfo.answer.templateName) {
+          templateInfo.answer.templateName =
+            packageTemplateInfo.answer.templateName
+        } else {
+          templateInfo.answer.templateName = nginxTemplateName || 'template'
+        }
+      }
+    } else {
+      templateInfo.answer = {
+        name: directoryName,
+        description: packageJsonInfo.description || 'A Vue.js project',
+        author: packageJsonInfo.author || '',
+        menuId: menuId || 1,
+        templateName: nginxTemplateName || 'template',
+      }
+    }
+  }
+  return templateInfo
+}
+
+// 获取某个文件对应的内容
+function getFileContent(filePath) {
+  const localProjectPath = getCurrenPath()
+  // 项目下的package.json的路径
+  const completeFilePath = concatPath(localProjectPath, filePath)
+  // package的内容
+  const fileStr = fs.readFileSync(completeFilePath).toString()
+  return fileStr
+}

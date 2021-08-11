@@ -1,6 +1,6 @@
 {
   "name": "vue-rc-cli",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -9,7 +9,7 @@
     "rc-delete": "bin/rc-delete",
     "rc-list": "bin/rc-list",
     "rc-init": "bin/rc-init",
-    "rc-update2": "bin/rc-update"
+    "rc-update": "bin/rc-update"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
